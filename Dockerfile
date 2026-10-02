@@ -1,10 +1,16 @@
-FROM php:8.1-apache
+FROM php:8.1-cli
 
-# Install only the necessary database extensions
+# Install database tools natively
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Copy the repository files directly into Apache's HTML root
-COPY . /var/www/html/
+# Set the working directory inside the container
+WORKDIR /var/www/html
 
-# Grant the server permission to save incoming thumbnail images
-RUN chmod -R 777 /var/www/html/
+# Copy all repository files over
+COPY . .
+
+# Expose the network port
+EXPOSE 80
+
+# Start a clean, built-in PHP web server without Apache
+CMD ["php", "-S", "0.0.0.0:80"]
